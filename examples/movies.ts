@@ -29,31 +29,29 @@ interface Parameters {
 const $ = spogtan<Parameters>();
 
 // Create a reusable $movie object which is constructed based on the available Parameters
-const $movie = $.wrap<Movie>(
-  $.with(
+const $movie = $.wrap_with_defaults<Movie>(
+  {
     // You can specify defaults to make some parameters optional
-    $.defaults({
-      tag_line: null,
-      awards: [],
-    }),
-    {
-      // $.get() will look up the given parameter later, at evaluation time
-      title: $.get('title'),
-      tag_line: $.get('tag_line'),
-      genre: $.get('genre'),
-      awards: $.get('awards'),
-      // You can automatically generate parameter values based on other parameters
-      // Any function-valued parameters will be called later, at evaluation time
-      id: () =>
-        // $() will look up and evaluate the given parameter,
-        // returning concrete data that you can manipulate with code
-        $('title')
-          .toLowerCase()
-          .replace(/[^\w]+/g, '-'),
-      // $.template lets you substitute concrete parameter values into strings with ease
-      summary: $.template`${'title'} (${'genre'})`,
-    },
-  ),
+    tag_line: null,
+    awards: [],
+  },
+  {
+    // $.get() will look up the given parameter later, at evaluation time
+    title: $.get('title'),
+    tag_line: $.get('tag_line'),
+    genre: $.get('genre'),
+    awards: $.get('awards'),
+    // You can automatically generate parameter values based on other parameters
+    // Any function-valued parameters will be called later, at evaluation time
+    id: () =>
+      // $() will look up and evaluate the given parameter,
+      // returning concrete data that you can manipulate with code
+      $('title')
+        .toLowerCase()
+        .replace(/[^\w]+/g, '-'),
+    // $.template lets you substitute concrete parameter values into strings with ease
+    summary: $.template`${'title'} (${'genre'})`,
+  },
 );
 
 const comedies = $.with(

@@ -74,6 +74,14 @@ export class Spogtan<Parameters> extends Function {
     return (frame: Frame<Parameters> = {}): (() => Evaluated<T>) => this.with(frame, value) as () => Evaluated<T>;
   }
 
+  // A helper for creating a wrapped evaluable with a frame of defaults
+  wrap_with_defaults<T>(
+    defaults: Frame<Parameters>,
+    value: Evaluable<T>,
+  ): (frame?: Frame<Parameters>) => () => Evaluated<T> {
+    return this.wrap(this.with(this.defaults(defaults), value) as Evaluable<T>);
+  }
+
   // Returns an Evaluable which, When evaluated, will return the value of the given `parameter`.
   get<Param extends keyof Parameters>(parameter: Param): () => Evaluable<Parameters[Param]>;
   get<Param extends keyof Parameters>(
