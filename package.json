@@ -1,0 +1,47 @@
+{
+  "name": "spogtan",
+  "version": "0.0.0",
+  "description": "Write terse, typed and reusable configurations",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublish": "npm run lint && npm run build",
+    "build": "tsc",
+    "lint": "eslint . --fix && prettier --check . --write",
+    "lint-check": "eslint . && prettier --check .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LukeGT/spogtan.git"
+  },
+  "keywords": [
+    "configuration",
+    "language",
+    "typed",
+    "yaml",
+    "json",
+    "prometheus",
+    "cloud formation",
+    "kubernetes",
+    "home assistant"
+  ],
+  "author": "Luke Tsekouras",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LukeGT/spogtan/issues"
+  },
+  "homepage": "https://github.com/LukeGT/spogtan#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "prettier": "^2.3.2",
+    "typescript": "^4.4.2",
+    "typescript-eslint": "0.0.1-alpha.0"
+  }
+}
