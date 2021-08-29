@@ -7,9 +7,9 @@ type LateValue<T> = (inherited?: T) => Evaluable<T>;
 type Evaluable<T> =
   | T
   | LateValue<T>
-  | { [key in keyof T]?: Evaluable<T[key]> }
+  | { [key in keyof T]: Evaluable<T[key]> }
   | (T extends Array<infer V> ? Evaluable<V>[] : never);
-// Unravels a deep object containing an Evaluable, returning the concrete object it represents.
+// Unravels a deep Evaluable object, returning the concrete object it represents.
 type Evaluated<T> = T extends LateValue<infer U>
   ? Evaluated<U>
   : T extends Array<infer U>
