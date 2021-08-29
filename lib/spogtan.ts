@@ -165,21 +165,20 @@ export function evaluate<Evaluable>(value: Evaluable): Evaluated<Evaluable> {
 // Returns a late value of merged `items`.
 // Merging for strings and lists means concatenation,
 // and for objects it means combining entries, with later entries taking precedence.
-export function merge(...items: Evaluable<string>[]): () => string;
-export function merge<T>(...items: Evaluable<T[]>[]): () => Evaluated<T>[];
-export function merge<T>(...items: Evaluable<Record<string, T>>[]): () => Record<string, Evaluated<T>>;
-export function merge<T>(...items: Evaluable<string | T[] | Record<string, T>>[]) {
-  return (): string | Evaluated<T>[] | Record<string, Evaluated<T>> => {
-    const evaluated_items = evaluate(items);
+export function merge<Value extends string | InnerValue[] | Record<string, InnerValue>, InnerValue>(
+  ...items: Evaluable<Value>[]
+) {
+  return (inherited?: Evaluated<Value>): Evaluated<Value> => {
+    const evaluated_items = (inherited !== undefined ? [inherited] : []).concat(evaluate(items) as Evaluated<Value>[]);
     const first_item = evaluated_items[0];
     if (typeof first_item === 'string') {
-      return evaluated_items.join('');
+      return evaluated_items.join('') as Evaluated<Value>;
     } else if (first_item instanceof Array) {
-      return evaluated_items.flat() as Evaluated<T>[];
-    } else if (first_item instanceof Object) {
+      return evaluated_items.flat() as Evaluated<Value>;
+    } else if (typeof first_item === 'object') {
       return Object.fromEntries(
-        (evaluated_items as Record<string, T>[]).map((item: Record<string, T>) => Object.entries(item)).flat(),
-      ) as Record<string, Evaluated<T>>;
+        (evaluated_items as Record<string, InnerValue>[]).map((item) => Object.entries(item)).flat(),
+      ) as Evaluated<Value>;
     } else {
       throw new Error(
         `Can't merge values of type ${evaluated_items[0].constructor.name}, must be a string, array or object.`,

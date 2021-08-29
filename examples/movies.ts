@@ -21,7 +21,6 @@ interface Config {
 interface Parameters {
   title: string;
   tag_line: string | null;
-  summary: string;
   genre: Genre;
   awards: Award[];
 }
@@ -82,8 +81,9 @@ const oscar_sci_fis = $.with(
     $movie({
       title: 'Interstellar',
       tag_line: 'The end of Earth will not be the end of us.',
-      // You can expand on inherited values
-      awards: (inherited) => (inherited ?? []).concat('bafta'),
+      // You can merge new values with inherited values.
+      // Lists and strings will be concatenated, while objects have their keys merged.
+      awards: spogtan.merge(['bafta' as Award]),
     }),
     $movie({
       title: 'Ex Machina',
@@ -92,10 +92,10 @@ const oscar_sci_fis = $.with(
   ],
 );
 
-// Make your spogtan config concrete by evaluating it.
-// Evaluate will unravel the given types and return the concrete type.
+// Make your spogtan config concrete by evaluating it recursively.
+// evaluate will unravel the given types and return the concrete type.
 const config: Config = spogtan.evaluate({
-  // When evaluate is called, merge will concatenate lists and strings or combine objects after evaluating them
+  // merge can also be used within evaluated objects to bring them together.
   movies: spogtan.merge(comedies, oscar_sci_fis),
 });
 
