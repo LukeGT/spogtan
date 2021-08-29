@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["tsconfig.json"]
+    "project": ["tsconfig.json", "examples/tsconfig.json"]
   },
   "plugins": ["@typescript-eslint"],
   "extends": [
@@ -12,7 +12,7 @@
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "ignorePatterns": ["dist/**"],
+  "ignorePatterns": ["dist/**", "*.js"],
   "rules": {
     "@typescript-eslint/triple-slash-reference": "off",
     "@typescript-eslint/ban-ts-comment": "off",
