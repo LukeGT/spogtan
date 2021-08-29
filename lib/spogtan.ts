@@ -71,7 +71,7 @@ export class Spogtan<Parameters> extends Function {
 
   // Allows a user to apply their own `frame` of parameters to a given value. This is useful for creating a reusable value.
   wrap<T>(value: Evaluable<T>) {
-    return (frame: Frame<Parameters> = {}): (() => Evaluated<Evaluable<T>>) => this.with(frame, value);
+    return (frame: Frame<Parameters> = {}): (() => Evaluated<T>) => this.with(frame, value) as () => Evaluated<T>;
   }
 
   // Returns an Evaluable which, When evaluated, will return the value of the given `parameter`.
