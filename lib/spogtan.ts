@@ -135,6 +135,43 @@ export class Spogtan<Parameters> extends Function {
     return evaluate(this.get(parameter, required)) as Parameters[Param];
   }
 
+  // Constructs an object with a key for each parameter in `parameters`, where the value is $.get() for that parameter.
+  // `extra_object` can be passed to define other properties of the final object. It keys are merged into the $.get()
+  // object, taking precedence if there's a key clash.
+  objectify<
+    Param extends keyof Parameters,
+    Return extends {
+      [key in Param]: Evaluable<key extends Param ? Parameters[key] : unknown>;
+    },
+  >(parameters: Param[]): Return;
+  objectify<
+    Param extends keyof Parameters,
+    Extra extends Record<string, unknown>,
+    Return extends {
+      [key in Param | keyof Extra]: key extends keyof Extra
+        ? Extra[key]
+        : Evaluable<key extends Param ? Parameters[key] : unknown>;
+    },
+  >(parameters: Param[], extra_object: Extra): Return;
+  objectify<
+    Param extends keyof Parameters,
+    Extra extends Record<string, unknown>,
+    Return extends {
+      [key in Param | keyof Extra]: key extends keyof Extra
+        ? Extra[key]
+        : Evaluable<key extends Param ? Parameters[key] : unknown>;
+    },
+  >(parameters: Param[], extra_object: Extra = {} as Extra): Return {
+    const parameter_entries = parameters.map((parameter) => [parameter, this.get(parameter)]) as [
+      Param,
+      Evaluable<unknown>,
+    ][];
+    const extra_entries = Object.entries(extra_object) as [keyof Extra, unknown][];
+    return Object.fromEntries(
+      ([] as [Param | keyof Extra, unknown][]).concat(parameter_entries, extra_entries),
+    ) as Return;
+  }
+
   // An ES6 template string which takes in parameter names and returns evaluated parameter values when evaluated.
   // E.g. $.template`This is the value of parameter a: ${'a'}`
   template(strings: readonly string[], ...parameters: (keyof Parameters | '$inherited')[]) {

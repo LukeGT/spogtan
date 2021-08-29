@@ -35,13 +35,9 @@ const $movie = $.wrap_with_defaults<Movie>(
     tag_line: null,
     awards: [],
   },
-  {
-    // $.get() will look up the given parameter later, at evaluation time
-    title: $.get('title'),
-    tag_line: $.get('tag_line'),
-    genre: $.get('genre'),
-    awards: $.get('awards'),
-    // You can automatically generate parameter values based on other parameters
+  // objectify creates an object where each key is pulled from a parameter of the same name.
+  $.objectify(['title', 'tag_line', 'genre', 'awards'], {
+    // You can generate parameter values based on other parameters
     // Any function-valued parameters will be called later, at evaluation time
     id: () =>
       // $() will look up and evaluate the given parameter,
@@ -51,7 +47,7 @@ const $movie = $.wrap_with_defaults<Movie>(
         .replace(/[^\w]+/g, '-'),
     // $.template lets you substitute concrete parameter values into strings with ease
     summary: $.template`${'title'} (${'genre'})`,
-  },
+  }),
 );
 
 const comedies = $.with(
