@@ -6,6 +6,7 @@
   "scripts": {
     "prepublish": "npm run lint && npm run build",
     "build": "tsc",
+    "build-examples": "npm run build && tsc -p examples/tsconfig.json",
     "lint": "eslint . --fix && prettier --check . --write",
     "lint-check": "eslint . && prettier --check .",
     "test": "echo \"Error: no test specified\" && exit 1"
