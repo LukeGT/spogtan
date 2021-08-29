@@ -1,6 +1,6 @@
 {
   "name": "spogtan",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "Write terse, typed and reusable configurations",
   "main": "dist/index.js",
   "scripts": {
@@ -20,6 +20,8 @@
   },
   "keywords": [
     "configuration",
+    "config",
+    "generate",
     "language",
     "typed",
     "yaml",
