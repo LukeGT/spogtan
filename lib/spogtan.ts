@@ -1,3 +1,5 @@
+import * as util from 'util';
+
 // A LateValue is a function that defines how to construct a value at a later time, when `evaluate` is called.
 // If the function has an argument, the value that this parameter would have if the late value were not
 // specified is passed in. In this way you can modify values higher in the stack.
@@ -24,15 +26,6 @@ type Evaluated<T> = T extends LateValue<infer U>
 type Frame<Parameters> = {
   [Param in keyof Parameters]?: Evaluable<Parameters[Param]> | Default<Parameters[Param]> | undefined;
 };
-
-// An object which represents an undefined value. This allows us to differentiate between a parameter being
-// unset and undefined being explicitly passed.
-export interface Undefined {
-  _undefined: unknown;
-}
-type Undefinable<T> = undefined extends T ? T | Undefined : T;
-
-export const UNDEFINED: Undefined = { _undefined: null };
 
 // Wraps an Evaluable that will only be returned if there is no value set higher up in the Frame stack already.
 class Default<T> {
@@ -85,9 +78,12 @@ export class Spogtan<Parameters> extends Function {
   get<Param extends keyof Parameters>(parameter: Param): () => Evaluable<Parameters[Param]>;
   get<Param extends keyof Parameters>(
     parameter: Param,
-    default_value?: Undefinable<Parameters[Param]>,
-  ): () => Evaluable<Parameters[Param]>;
-  get<Param extends keyof Parameters>(parameter: Param, default_value?: Undefinable<Parameters[Param]>) {
+    required: boolean,
+  ): () => Evaluable<Parameters[Param]> | undefined;
+  get<Param extends keyof Parameters>(
+    parameter: Param,
+    required = true,
+  ): () => Evaluable<Parameters[Param]> | undefined {
     // undefined is added to the return type because Typescript can't tell that
     // undefined is only returned when Parameters[Param] extends undefined.
     return (): Evaluable<Parameters[Param]> | undefined => {
@@ -115,33 +111,20 @@ export class Spogtan<Parameters> extends Function {
         }
       }
 
-      if (value === undefined) {
-        if (default_value === undefined) {
-          throw new Error(`Missing required parameter ${parameter}`);
-        }
-        if (default_value === UNDEFINED) {
-          return undefined;
-        } else {
-          return default_value as Parameters[Param];
-        }
-      } else {
-        return value;
+      if (value === undefined && required) {
+        throw new Error(
+          `Missing required parameter ${parameter}. Current stack: ${util.inspect(this.stack, { depth: null })}`,
+        );
       }
+      return value;
     };
   }
 
   // Evaluates and returns the value of the given `parameter`.
   // Be sure not to call this method early, it should only be called from within a function that is later evaluated.
   get_evaluated<Param extends keyof Parameters>(parameter: Param): Parameters[Param];
-  get_evaluated<Param extends keyof Parameters>(
-    parameter: Param,
-    default_value?: Undefinable<Parameters[Param]>,
-  ): Parameters[Param];
-  get_evaluated<Param extends keyof Parameters>(
-    parameter: Param,
-    default_value?: Undefinable<Parameters[Param]>,
-  ): Parameters[Param] | undefined {
-    return evaluate(this.get(parameter, default_value)) as Parameters[Param];
+  get_evaluated<Param extends keyof Parameters>(parameter: Param, required = true): Parameters[Param] | undefined {
+    return evaluate(this.get(parameter, required)) as Parameters[Param];
   }
 
   // An ES6 template string which takes in parameter names and returns evaluated parameter values when evaluated.
