@@ -40,8 +40,8 @@ const $movie = $.wrap<Movie>(
     {
       // $.get() will look up the given parameter later, at evaluation time
       title: $.get('title'),
-      genre: $.get('genre'),
       tag_line: $.get('tag_line'),
+      genre: $.get('genre'),
       awards: $.get('awards'),
       // You can automatically generate parameter values based on other parameters
       // Any function-valued parameters will be called later, at evaluation time
