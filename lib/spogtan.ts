@@ -137,13 +137,13 @@ export class Spogtan<Parameters> extends Function {
 
   // An ES6 template string which takes in parameter names and returns evaluated parameter values when evaluated.
   // E.g. $.template`This is the value of parameter a: ${'a'}`
-  template(strings: readonly string[], ...parameters: (keyof Parameters | '_inherited')[]) {
+  template(strings: readonly string[], ...parameters: (keyof Parameters | '$inherited')[]) {
     return (inherited?: unknown): string => {
       const parts = [];
       for (let p = 0; p < parameters.length; ++p) {
         const parameter = parameters[p];
         parts.push(strings[p]);
-        if (parameter === '_inherited') {
+        if (parameter === '$inherited') {
           parts.push(inherited);
         } else {
           parts.push(this.get_evaluated(parameter));
