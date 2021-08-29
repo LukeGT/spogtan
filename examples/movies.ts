@@ -4,15 +4,6 @@ import { spogtan } from '../dist';
 type Genre = 'action' | 'romance' | 'sci-fi' | 'adventure' | 'horror' | 'comedy';
 type Award = 'oscar' | 'bafta' | 'aacta';
 
-// Define what parameters your config can take
-interface Parameters {
-  title: string;
-  tag_line: string | null;
-  summary: string;
-  genre: Genre;
-  awards: Award[];
-}
-
 // Define interfaces for your final config's output
 interface Movie {
   id: string;
@@ -26,28 +17,49 @@ interface Config {
   movies: Movie[];
 }
 
-// Initialise Spogtan with your Paramters type
+// Define what parameters your config can take
+interface Parameters {
+  title: string;
+  tag_line: string | null;
+  summary: string;
+  genre: Genre;
+  awards: Award[];
+}
+
+// Initialise Spogtan with your Parameters type
 const $ = spogtan<Parameters>();
 
 // Create a reusable $movie object which is constructed based on the available Parameters
-const $movie = $.wrap<Movie>({
-  // $.get will look up the given parameter later, at evaluation time
-  title: $.get('title'),
-  genre: $.get('genre'),
-  // You can specify defaults to make these parameters optional
-  tag_line: $.get('tag_line', null),
-  awards: $.get('awards', []),
-  // You can automatically generate parameter values based on other parameters
-  id: () =>
-    $('title')
-      .toLowerCase()
-      .replace(/[^\w]+/g, '-'),
-  summary: $.template`${'title'} (${'genre'})`,
-});
+const $movie = $.wrap<Movie>(
+  $.with(
+    // You can specify defaults to make some parameters optional
+    $.defaults({
+      tag_line: null,
+      awards: [],
+    }),
+    {
+      // $.get() will look up the given parameter later, at evaluation time
+      title: $.get('title'),
+      genre: $.get('genre'),
+      tag_line: $.get('tag_line'),
+      awards: $.get('awards'),
+      // You can automatically generate parameter values based on other parameters
+      // Any function-valued parameters will be called later, at evaluation time
+      id: () =>
+        // $() will look up and evaluate the given parameter,
+        // returning concrete data that you can manipulate with code
+        $('title')
+          .toLowerCase()
+          .replace(/[^\w]+/g, '-'),
+      // $.template lets you substitute concrete parameter values into strings with ease
+      summary: $.template`${'title'} (${'genre'})`,
+    },
+  ),
+);
 
 const comedies = $.with(
   {
-    // This genre is available to all movies below
+    // This genre applies to all movies below
     genre: 'comedy',
   },
   [
