@@ -1,7 +1,7 @@
 {
   "name": "spogtan",
   "version": "0.4.2",
-  "description": "Write terse, typed and reusable configurations",
+  "description": "A typed, terse and reusable configuration library for anything.",
   "main": "dist/index.js",
   "scripts": {
     "prepublish": "npm run lint && npm run build",

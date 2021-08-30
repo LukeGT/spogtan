@@ -11,9 +11,10 @@ Spogtan is a typed, terse and reusable configuration library that can generate a
 
 ## The basic idea
 
-For more in-depth examples, see the [examples folder](https://github.com/LukeGT/spogtan/tree/main/examples).
+Spogtan lets you set the value of a parameter for multiple objects at the same time.
 
 ```Typescript
+// $.with takes a `Frame` of parameters and makes them available to the object passed in
 const comedies = $.with(
   {
     // This genre applies to all movies below
@@ -21,12 +22,56 @@ const comedies = $.with(
   },
   [
     $movie({
-      title: 'Four Weddings and Funeral',
-      tag_line: 'Five good reasons to stay single',
+      title: 'Four Weddings and a Funeral',
+      year: 1994,
     }),
     $movie({
       title: 'Bridesmaids',
+      year: 2011,
     }),
   ],
 );
 ```
+
+To make this work, objects are built using "late values", which are just functions that build a value later.
+
+```Typescript
+const $movie = $.wrap({
+  // These values are pulled from the parameters in scope at evaluation time
+  title: $.get('title'),  // This is equivalent to () => $('title')
+  year: $.get('year'),
+  genre: $.get('genre'),
+  // The id is constructed based on the title and year Parameters
+  id: () =>
+    [
+      $('title')
+        .toLowerCase()
+        .replace(/[^\w]+/g, '-'),
+      $('year'),
+    ].join('-'),
+})
+```
+
+Calling `spogtan.evaluate` will recursively call all late values and return a concrete object.
+
+```Typescript
+console.log(spogtan.evaluate(comedies));
+/*
+[
+  {
+    title: 'Four Weddings and a Funeral',
+    year: 1994,
+    genre: 'comedy',
+    id: 'four-weddings-and-a-funeral-1994',
+  },
+  {
+    title: 'Bridesmaids',
+    year: 2011,
+    genre: 'comedy',
+    id: 'bridesmaids-2011',
+  },
+]
+*/
+```
+
+For more in-depth examples, see the [examples folder](https://github.com/LukeGT/spogtan/tree/main/examples).

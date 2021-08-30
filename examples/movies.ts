@@ -8,6 +8,7 @@ type Award = 'oscar' | 'bafta' | 'aacta';
 interface Movie {
   id: string;
   title: string;
+  year: number;
   tag_line: string | null;
   summary: string;
   genre: Genre;
@@ -20,6 +21,7 @@ interface Config {
 // Define what parameters your config can take
 interface Parameters {
   title: string;
+  year: number;
   tag_line: string | null;
   genre: Genre;
   awards: Award[];
@@ -36,15 +38,18 @@ const $movie = $.wrap_with_defaults<Movie>(
     awards: [],
   },
   // objectify creates an object where each key is pulled from a parameter of the same name.
-  $.objectify(['title', 'tag_line', 'genre', 'awards'], {
+  $.objectify(['title', 'year', 'tag_line', 'genre', 'awards'], {
     // You can generate parameter values based on other parameters
     // Any function-valued parameters will be called later, at evaluation time
     id: () =>
       // $() will look up and evaluate the given parameter,
       // returning concrete data that you can manipulate with code
-      $('title')
-        .toLowerCase()
-        .replace(/[^\w]+/g, '-'),
+      [
+        $('title')
+          .toLowerCase()
+          .replace(/[^\w]+/g, '-'),
+        $('year'),
+      ].join('-'),
     // $.template lets you substitute concrete parameter values into strings with ease
     summary: $.template`${'title'} (${'genre'})`,
   }),
@@ -57,11 +62,13 @@ const comedies = $.with(
   },
   [
     $movie({
-      title: 'Four Weddings and Funeral',
+      title: 'Four Weddings and a Funeral',
+      year: 1994,
       tag_line: 'Five good reasons to stay single',
     }),
     $movie({
       title: 'Bridesmaids',
+      year: 2011,
     }),
   ],
 );
@@ -75,12 +82,14 @@ const oscar_sci_fis = $.with(
     $movie({
       title: 'Interstellar',
       tag_line: 'The end of Earth will not be the end of us.',
+      year: 2014,
       // You can merge new values with inherited values.
       // Lists and strings will be concatenated, while objects have their keys merged.
       awards: spogtan.merge(['bafta' as Award]),
     }),
     $movie({
       title: 'Ex Machina',
+      year: 2014,
       tag_line: 'What happens to me if I fail your test?',
     }),
   ],
@@ -100,35 +109,39 @@ console.log(inspect(config, { depth: null }));
 {
   movies: [
     {
-      title: 'Four Weddings and Funeral',
-      genre: 'comedy',
+      title: 'Four Weddings and a Funeral',
+      year: 1994,
       tag_line: 'Five good reasons to stay single',
+      genre: 'comedy',
       awards: [],
-      id: 'four-weddings-and-funeral',
-      summary: 'Four Weddings and Funeral (comedy)'
+      id: 'four-weddings-and-a-funeral-1994',
+      summary: 'Four Weddings and a Funeral (comedy)'
     },
     {
       title: 'Bridesmaids',
-      genre: 'comedy',
+      year: 2011,
       tag_line: null,
+      genre: 'comedy',
       awards: [],
-      id: 'bridesmaids',
+      id: 'bridesmaids-2011',
       summary: 'Bridesmaids (comedy)'
     },
     {
       title: 'Interstellar',
-      genre: 'sci-fi',
+      year: 2014,
       tag_line: 'The end of Earth will not be the end of us.',
+      genre: 'sci-fi',
       awards: [ 'oscar', 'bafta' ],
-      id: 'interstellar',
+      id: 'interstellar-2014',
       summary: 'Interstellar (sci-fi)'
     },
     {
       title: 'Ex Machina',
-      genre: 'sci-fi',
+      year: 2014,
       tag_line: 'What happens to me if I fail your test?',
+      genre: 'sci-fi',
       awards: [ 'oscar' ],
-      id: 'ex-machina',
+      id: 'ex-machina-2014',
       summary: 'Ex Machina (sci-fi)'
     }
   ]
