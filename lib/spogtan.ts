@@ -1,9 +1,9 @@
 import * as util from 'util';
 
 // A LateValue is a function that defines how to construct a value at a later time, when `evaluate` is called.
-// If the function has an argument, the value that this parameter would have if the late value were not
-// specified is passed in. In this way you can modify values higher in the stack.
-type LateValue<T> = (inherited?: T) => Evaluable<T>;
+type LateValue<T> = () => Evaluable<T>;
+// An InheritedOp modifies the next highest value for a parameter in the stack.
+type InheritedOp<T> = (inherited: T | undefined) => Evaluable<T>;
 // An Evaluable value is one that can be evaluated by being passed to the `evaluate` function.
 // It can be a nested structure of arrays and objects with any values replaceable with LateValues.
 type Evaluable<T> =
@@ -24,8 +24,9 @@ type Evaluated<T> = T extends LateValue<infer U>
 // A Frame contains a set of Parameters which are pushed onto the stack.
 // These values can be pulled out with calls to `get`.
 type Frame<Parameters> = {
-  [Param in keyof Parameters]?: Evaluable<Parameters[Param]> | Default<Parameters[Param]> | undefined;
+  [Param in keyof Parameters]?: FrameValue<Parameters[Param]>;
 };
+type FrameValue<T> = Evaluable<T> | InheritedOp<T> | Default<T>;
 
 // Wraps an Evaluable that will only be returned if there is no value set higher up in the Frame stack already.
 class Default<T> {
@@ -105,17 +106,17 @@ export class Spogtan<Parameters> extends Function {
       let value: Evaluable<Parameters[Param]> | undefined = undefined;
 
       for (const frame of this.stack) {
-        const frame_value = frame[parameter] as Evaluable<Parameters[Param]>;
+        const frame_value = frame[parameter] as FrameValue<Parameters[Param]> | undefined;
         if (frame_value === undefined) continue;
 
         if (frame_value instanceof Default) {
           if (value === undefined) {
             value = frame_value.value;
           }
-        } else if (frame_value instanceof Function && frame_value.length === 1 && value !== undefined) {
-          value = frame_value(evaluate(value) as Parameters[Param]);
+        } else if (frame_value instanceof Function && frame_value.length === 1) {
+          value = frame_value(evaluate(value) as Parameters[Param] | undefined);
         } else {
-          value = frame_value;
+          value = frame_value as Evaluable<Parameters[Param]>;
         }
       }
 
