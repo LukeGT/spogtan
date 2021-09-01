@@ -1,3 +1,6 @@
 {
-  "cSpell.words": ["spogtan"]
+  "cSpell.words": [
+    "spogtan"
+  ],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
