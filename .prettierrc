@@ -3,10 +3,5 @@
   "singleQuote": true,
   "trailingComma": "all",
   "proseWrap": "always",
-  "overrides": [
-    {
-      "files": "README",
-      "options": { "parser": "markdown" }
-    }
-  ]
+  "overrides": []
 }
