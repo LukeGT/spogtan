@@ -4,12 +4,12 @@
   "description": "A typed, terse and reusable configuration library for anything.",
   "main": "dist/index.js",
   "scripts": {
-    "prepublish": "npm run lint && npm run build",
+    "prepublish": "npm run lint-check && npm run build && npm run test",
     "build": "tsc",
     "build-examples": "npm run build && tsc -p examples/tsconfig.json",
     "lint": "eslint . --fix && prettier --check . --write",
     "lint-check": "eslint . && prettier --check .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsc -p test/tsconfig.json && jest test/.*"
   },
   "files": [
     "dist"
@@ -38,12 +38,15 @@
   },
   "homepage": "https://github.com/LukeGT/spogtan#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.15.0",
+    "@types/jest": "^27.0.1",
     "@types/node": "^16.7.5",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-promise": "^5.1.0",
+    "jest": "^27.1.0",
     "prettier": "^2.3.2",
     "typescript": "^4.4.2"
   },

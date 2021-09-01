@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["tsconfig.json", "examples/tsconfig.json"]
+    "project": ["tsconfig.json", "examples/tsconfig.json", "test/tsconfig.json"]
   },
   "plugins": ["@typescript-eslint"],
   "extends": [

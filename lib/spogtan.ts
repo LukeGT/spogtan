@@ -181,10 +181,12 @@ export class Spogtan<Parameters> extends Function {
       for (let p = 0; p < parameters.length; ++p) {
         const parameter = parameters[p];
         parts.push(strings[p]);
-        if (parameter === '$inherited') {
-          parts.push(inherited);
+        const evaluated = parameter === '$inherited' ? inherited : this.get_evaluated(parameter);
+        if (evaluated === null) {
+          // String.join() returns empty string for null
+          parts.push('null');
         } else {
-          parts.push(this.get_evaluated(parameter));
+          parts.push(evaluated);
         }
       }
       parts.push(strings[strings.length - 1]);

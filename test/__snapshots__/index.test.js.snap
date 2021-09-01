@@ -1,0 +1,111 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InheritedOp works 1`] = `
+Object {
+  "bigint": 43n,
+  "boolean": false,
+  "nullable": "nullable",
+  "number": 43,
+  "optional": "optional",
+  "string": "string?!",
+  "symbol": Symbol(Symbol(symbol)?!),
+}
+`;
+
+exports[`deep frame value 1`] = `
+Object {
+  "array": Array [
+    Object {
+      "string": "string",
+    },
+  ],
+}
+`;
+
+exports[`deep value 1`] = `
+Object {
+  "array": Array [
+    Object {
+      "string": "string",
+    },
+  ],
+}
+`;
+
+exports[`empty merges 1`] = `
+Object {
+  "array": Array [
+    Object {
+      "number": 2,
+    },
+  ],
+  "object": Object {
+    "string": "2",
+  },
+  "string": "?!",
+}
+`;
+
+exports[`inner defaults are overridden 1`] = `
+Object {
+  "bigint": 43n,
+  "boolean": false,
+  "nullable": "not null",
+  "number": 43,
+  "optional": "not undefined",
+  "string": "better string",
+  "symbol": Symbol(better symbol),
+}
+`;
+
+exports[`simple defaults 1`] = `
+Object {
+  "bigint": 42n,
+  "boolean": true,
+  "nullable": null,
+  "number": 42,
+  "optional": undefined,
+  "string": "string",
+  "symbol": Symbol(symbol),
+}
+`;
+
+exports[`simple values 1`] = `
+Object {
+  "bigint": 42n,
+  "boolean": true,
+  "nullable": null,
+  "number": 42,
+  "optional": undefined,
+  "string": "string",
+  "symbol": Symbol(symbol),
+}
+`;
+
+exports[`template string 1`] = `"string 42 true 42 null optional"`;
+
+exports[`template string inherited 1`] = `
+Object {
+  "nullable": "null?!",
+  "optional": "optional?!",
+  "string": "string?!",
+}
+`;
+
+exports[`valid merges 1`] = `
+Object {
+  "array": Array [
+    Object {
+      "number": 1,
+    },
+    Object {
+      "number": 2,
+    },
+  ],
+  "object": Object {
+    "number": 1,
+    "string": "2",
+  },
+  "string": "string?!",
+}
+`;
