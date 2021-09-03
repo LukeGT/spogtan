@@ -132,6 +132,8 @@ export class Spogtan<Parameters> extends Function {
   // Evaluates and returns the value of the given `parameter`.
   // Be sure not to call this method early, it should only be called from within a function that is later evaluated.
   get_evaluated<Param extends keyof Parameters>(parameter: Param): Parameters[Param];
+  get_evaluated<Param extends keyof Parameters>(parameter: Param, required: true): Parameters[Param];
+  get_evaluated<Param extends keyof Parameters>(parameter: Param, required: false): Parameters[Param] | undefined;
   get_evaluated<Param extends keyof Parameters>(parameter: Param, required = true): Parameters[Param] | undefined {
     return evaluate(this.get(parameter, required)) as Parameters[Param];
   }
