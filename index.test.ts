@@ -140,6 +140,22 @@ test('InheritedOp works', () => {
   expect(spogtan.evaluate(values)).toMatchSnapshot();
 });
 
+test('Setting undefined removes parameter', () => {
+  const $ = spogtan<Parameters>();
+  const values = $.with(
+    {
+      optional: 'optional',
+    },
+    $.with(
+      {
+        optional: undefined,
+      },
+      $.get('optional', false),
+    ),
+  );
+  expect(spogtan.evaluate(values)).toBe(undefined);
+});
+
 test('valid merges', () => {
   const $ = spogtan<Parameters>();
   const values = $.with(

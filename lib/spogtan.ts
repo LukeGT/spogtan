@@ -106,8 +106,8 @@ export class Spogtan<Parameters> extends Function {
       let value: Evaluable<Parameters[Param]> | undefined = undefined;
 
       for (const frame of this.stack) {
+        if (!(parameter in frame)) continue;
         const frame_value = frame[parameter] as FrameValue<Parameters[Param]> | undefined;
-        if (frame_value === undefined) continue;
 
         if (frame_value instanceof Default) {
           if (value === undefined) {
