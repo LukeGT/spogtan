@@ -156,6 +156,27 @@ test('Setting undefined removes parameter', () => {
   expect(spogtan.evaluate(values)).toBe(undefined);
 });
 
+test('Defaults are applied after removing parameter', () => {
+  const $ = spogtan<Parameters>();
+  const values = $.with(
+    {
+      optional: 'optional',
+    },
+    $.with(
+      {
+        optional: undefined,
+      },
+      $.with(
+        {
+          optional: $.default('default'),
+        },
+        $.get('optional'),
+      ),
+    ),
+  );
+  expect(spogtan.evaluate(values)).toBe('default');
+});
+
 test('valid merges', () => {
   const $ = spogtan<Parameters>();
   const values = $.with(

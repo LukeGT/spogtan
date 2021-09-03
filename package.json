@@ -1,6 +1,6 @@
 {
   "name": "spogtan",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "A typed, terse and reusable configuration library for anything.",
   "main": "dist/index.js",
   "scripts": {

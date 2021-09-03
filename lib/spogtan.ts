@@ -26,12 +26,7 @@ type Evaluated<T> = T extends LateValue<infer U>
 type Frame<Parameters> = {
   [Param in keyof Parameters]?: FrameValue<Parameters[Param]>;
 };
-type FrameValue<T> = Evaluable<T> | InheritedOp<T> | Default<T>;
-
-// Wraps an Evaluable that will only be returned if there is no value set higher up in the Frame stack already.
-class Default<T> {
-  constructor(public value: Evaluable<T>) {}
-}
+type FrameValue<T> = Evaluable<T> | InheritedOp<T>;
 
 // Contains a stack of Frames and provides methods to get, set and manipulate FrameValues.
 // Parameters should be set to an interface which represents the keys and values that can
@@ -48,9 +43,9 @@ export class Spogtan<Parameters> extends Function {
     return $ as Spogtan<Parameters> & Spogtan<Parameters>['get_evaluated'];
   }
 
-  // Wraps a default value
-  default<T>(value: Evaluable<T>): Default<T> {
-    return new Default<T>(value);
+  // Creates an InheritedOp which only sets the given value if there's no inherited value
+  default<T>(value: Evaluable<T>): InheritedOp<T> {
+    return (inherited) => (inherited === undefined ? value : inherited);
   }
 
   // Wraps all values within a Frame as default values. This is useful when using wrap(), so that you can
@@ -107,13 +102,9 @@ export class Spogtan<Parameters> extends Function {
 
       for (const frame of this.stack) {
         if (!(parameter in frame)) continue;
-        const frame_value = frame[parameter] as FrameValue<Parameters[Param]> | undefined;
+        const frame_value = frame[parameter] as FrameValue<Parameters[Param]>;
 
-        if (frame_value instanceof Default) {
-          if (value === undefined) {
-            value = frame_value.value;
-          }
-        } else if (frame_value instanceof Function && frame_value.length === 1) {
+        if (frame_value instanceof Function && frame_value.length === 1) {
           value = frame_value(evaluate(value) as Parameters[Param] | undefined);
         } else {
           value = frame_value as Evaluable<Parameters[Param]>;
