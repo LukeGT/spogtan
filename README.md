@@ -6,7 +6,7 @@ Spogtan is a typed, terse and reusable configuration library that can generate a
 
 - Never write repetitive YAML or JSON configs again
 - Create customisable and reusable components in a jiffy
-- Catch errors as you type them thanks to Typescript
+- Catch errors and get clever completions as you type, thanks to Typescript
 - No need to write and test bespoke code to generate your configs
 
 ## The basic idea
@@ -174,13 +174,53 @@ $.with(
 )
 ```
 
+You can also set `$.with` as a parameter value.
+
+```Typescript
+$.with(
+  {
+    url: $.template`https://${'domain'}/${'path'}`,
+    path: 'movies/',
+    prod: $.with({ domain: 'website.com' }, $.get('url')),
+    staging: $.with({ domain: 'staging.website.com' }, $.get('url')),
+  },
+  [
+    $.get('prod'),  // https://website.com/movies/
+    $.get('staging'),  // https://staging.website.com/movies/
+  ]
+)
+```
+
 #### Wrapped Objects
 
 A wrapped object lets you easily reuse a given [Evaluable Object](#evaluable-object) with a different
 [Parameter Frame](#parameter-frames) applied to it each time.
 
 ```Typescript
+// This is equivalent to:
+// $movie = (frame) => $.with(frame, {...})
+const $movie = $.wrap<Movie>({
+  title: $.get('title'),
+  genre: $.get('genre'),
+  year: $.get('year'),
+});
 
+const sci_fis = $.with(
+  {
+    genre: 'sci-fi',
+  },
+  [
+    // Each movie accepts a `Frame` of parameters which are applied to the $movie's evaluable object
+    $movie({
+      title: 'Inception',
+      year: 2010,
+    }),
+    $movie({
+      title: 'Ex Machina',
+      year: 2014,
+    }),
+  ],
+);
 ```
 
 #### Default Values
