@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "declaration": false,
-    "outDir": "."
+    "outDir": ".",
+    "strictFunctionTypes": false
   },
   "include": ["../*", "babel.config.js"],
   "exclude": ["node_modules", "dist", "examples"]
