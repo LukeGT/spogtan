@@ -82,8 +82,6 @@ Object {
 }
 `;
 
-exports[`template string 1`] = `"string 42 true 42 null optional"`;
-
 exports[`template string inherited 1`] = `
 Object {
   "nullable": "null?!",

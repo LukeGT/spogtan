@@ -188,7 +188,7 @@ test('template string', () => {
     },
     $.template`${'string'} ${'number'} ${'boolean'} ${'bigint'} ${'nullable'} ${'optional'}`,
   );
-  expect(spogtan.evaluate(values)).toMatchSnapshot();
+  expect(spogtan.evaluate(values)).toBe('string 42 true 42 null optional');
 });
 
 test('template string inherited', () => {
